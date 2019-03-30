@@ -4,8 +4,9 @@ import random
 # Hyperparameters
 learningRate = 0.1
 randomFactor = 0.1
-rewardForKill = 1
+rewardForKill = 2
 enemyFactor = 0.8
+initialQValue = 1
 
 # Actions are (elementId, directionId)
 actions = []
@@ -18,7 +19,7 @@ for i in range(8):
 
 print("Q Table initializing. Total elements:", 1000000 * len(actions))
 # qTable = np.memmap("./qTable", dtype='float32', mode='w+', shape=(1000000, len(actions)))
-qTable = np.zeros([1000000, len(actions)])
+qTable = np.full([1000000, len(actions)], initialQValue)
 print("Q Table initialized")
 
 elementMapping = [1, 2, 3, -1, -2, -3]
@@ -34,7 +35,7 @@ def getStateFromBoard(board):
     # and there is always at least one king (technically cases with only to kings arent used either), but this result is good enough
     return total
 
-def calculateReward(response, enemyState):
+def valueFunction(response, enemyState):
     if (response == None):
         return -10000
     if (abs(response) == 1):
@@ -57,10 +58,8 @@ def playATurn(game, player, training):
     response = game.play(player, action[0], action[1])
 
     enemyState = getStateFromBoard(game.getBoard() * player * (-1))
-    reward = calculateReward(response, enemyState)
-    oldValue = qTable[state, actionId]
-    newValue = (1 - learningRate) * oldValue + learningRate * reward
-    qTable[state, actionId] = newValue
+    value = valueFunction(response, enemyState)
+    qTable[state, actionId] = (1 - learningRate) * qTable[state, actionId] + learningRate * value
 
     if (response == None):
         return False

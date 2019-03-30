@@ -16,7 +16,7 @@ def playGame(training):
             print(game.getBoard())
 
 def train():
-    for i in range(10000):
+    for i in range(1000):
         print("Playing game :", i)
         playGame(True)
 
