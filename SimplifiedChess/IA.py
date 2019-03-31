@@ -37,7 +37,7 @@ def getStateFromBoard(board):
 
 def valueFunction(response, enemyState):
     if (response == None):
-        return -10000
+        return -10
     if (abs(response) == 1):
         return +10000
     # You lose points depending on what you opponent can expect
@@ -62,7 +62,7 @@ def playATurn(game, player, training):
     qTable[state, actionId] = (1 - learningRate) * qTable[state, actionId] + learningRate * value
 
     if (response == None):
-        return False
+        return "wrong"
     if (abs(response) == 1):
-        return False
-    return True
+        return "end"
+    return "ok"
